@@ -26,12 +26,12 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def current_installed_version
-    status, stdout, stderr = output_of_command("npm ls installed #{@new_resource.package_name}", {:user => @user})
+    status, stdout, stderr = output_of_command("npm list installed #{@new_resource.package_name}@", {:user => @user})
     status == 0 ? version_from_output(stdout) : nil
   end
 
   def npm_candiate_version
-    status, stdout, stderr = output_of_command("npm ls #{@new_resource.package_name}", {:user => @user})
+    status, stdout, stderr = output_of_command("npm list #{@new_resource.package_name}@", {:user => @user})
     status == 0 ? version_from_output(stdout) : nil
   end
 
