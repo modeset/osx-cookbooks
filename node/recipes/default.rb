@@ -3,7 +3,9 @@ include_recipe "homebrew"
 package "node"
 
 if File.exist?("#{node[:homebrew][:prefix]}/bin/npm")
-  npm_package "npm"
+  npm_package "npm" do
+    action :upgrade
+  end
 else
   url    = "http://registry.npmjs.org/npm/latest"
   latest = JSON.parse(open(url).read)['dist']
