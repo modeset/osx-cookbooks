@@ -36,11 +36,15 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def install_package(name, version)
-    run_npm_command "npm install#{expand_options(@new_resource.options)} #{name}"
+    command = "npm install#{expand_options(@new_resource.options)} #{name}"
+    command << "@#{version}" if version && !version.empty?
+    run_npm_command command
   end
 
   def upgrade_package(name, version)
-    install_package(name, version)
+    command = "npm update#{expand_options(@new_resource.options)} #{name}"
+    command << "@#{version}" if version && !version.empty?
+    run_npm_command command
   end
 
   def remove_package(name, version)
