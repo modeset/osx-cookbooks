@@ -59,11 +59,7 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
     if output =~ /Nothing found/
       nil
     else
-      strip_colors(output).split("\n").last.split(/\s|@/)[1]
+      output.split("\n").last.split(/\s|@/)[1]
     end
-  end
-
-  def strip_colors(output)
-    output.gsub(/\e\[\d*m/, '')
   end
 end
