@@ -44,11 +44,15 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def remove_package(name, version)
-    purge_package(name, version)
+    command = "npm deactivate #{name}"
+    command << "@#{version}" if version && !version.empty?
+    run_npm_command command
   end
 
   def purge_package(name, version)
-    run_npm_command "npm uninstall #{name}"
+    command = "npm uninstall #{name}"
+    command << "@#{version}" if version && !version.empty?
+    run_npm_command command
   end
 
   def run_npm_command(command)
