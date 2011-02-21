@@ -1,6 +1,18 @@
 include_recipe "homebrew"
 
+directory node[:npm][:root] do
+  owner node[:npm][:user]
+  group "staff"
+end
+
 package "node"
+
+template node[:npm][:globalconfig] do
+  variables node[:npm]
+  mode 0644
+  owner node[:npm][:user]
+  group "staff"
+end
 
 if File.exist?("#{node[:homebrew][:prefix]}/bin/npm")
   npm_package "npm" do
