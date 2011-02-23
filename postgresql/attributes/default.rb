@@ -1,1 +1,1 @@
-default.postgresql[:launchd] = false
+default.postgresql[:launchd] = true

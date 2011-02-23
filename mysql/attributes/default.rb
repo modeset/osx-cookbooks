@@ -1,1 +1,1 @@
-default.mysql[:launchd] = false
+default.mysql[:launchd] = true
