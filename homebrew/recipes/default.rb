@@ -43,3 +43,7 @@ execute "brew cleanup" do
   user node[:homebrew][:user]
   action :nothing
 end
+
+node[:homebrew][:formulas].each do |formula|
+  package formula
+end
