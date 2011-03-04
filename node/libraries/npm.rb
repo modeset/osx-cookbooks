@@ -42,9 +42,7 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def upgrade_package(name, version)
-    command = "npm update#{expand_options(@new_resource.options)} #{name}"
-    command << "@#{version}" if version && !version.empty?
-    run_npm_command command
+    install_package(name, version)
   end
 
   def remove_package(name, version)
