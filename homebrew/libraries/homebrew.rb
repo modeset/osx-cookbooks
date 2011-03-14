@@ -35,12 +35,15 @@ class Chef::Provider::Package::Homebrew < ::Chef::Provider::Package
   end
 
   def current_installed_version
-    status, stdout, stderr = output_of_command("#{brew_bin} list #{@new_resource.package_name} --versions", {:user => @user})
+    name = @new_resource.package_name
+    name = ::File.basename(name, '.rb') if name =~ /https?:\/\//
+    status, stdout, stderr = output_of_command("#{brew_bin} list #{name} --versions", {:user => @user})
     status == 0 ? stdout.split(' ')[-1] : nil
   end
 
   def homebrew_candiate_version
-    status, stdout, stderr = output_of_command("#{brew_bin} info #{@new_resource.package_name} | head -n1", {:user => @user})
+    name = @new_resource.package_name
+    status, stdout, stderr = output_of_command("#{brew_bin} info #{name} | head -n1", {:user => @user})
     status == 0 ? stdout.split(' ')[1] : nil
   end
 
