@@ -1,3 +1,3 @@
 application "PeepOpen" do
-  source "https://peepcode.com/system/apps/PeepOpen/PeepOpen-3.0.0.dmg"
+  source "https://peepcode.com/system/apps/PeepOpen/PeepOpen-0.3.1.dmg"
 end
