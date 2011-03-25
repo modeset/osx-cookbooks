@@ -1,5 +1,8 @@
 require 'chef/provider/package'
 
+require 'open-uri'
+require 'json'
+
 class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   def initialize(new_resource, run_context)
     super
@@ -26,17 +29,22 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def current_installed_version
-    status, stdout, stderr = output_of_command("npm list active installed #{@new_resource.package_name}@", {:user => @user})
-    status == 0 ? version_from_output(stdout) : nil
+    name = @new_resource.package_name
+    if package = global_installed_packages.detect { |n| n =~ /^#{name}@/ }
+      package.split("@")[1]
+    end
   end
 
   def npm_candiate_version
-    status, stdout, stderr = output_of_command("npm list latest #{@new_resource.package_name}@", {:user => @user})
-    status == 0 ? version_from_output(stdout) : nil
+    name = @new_resource.package_name
+    json = open("http://registry.npmjs.org/#{name}/latest").read
+    if package = JSON.parse(json)
+      package['version']
+    end
   end
 
   def install_package(name, version)
-    command = "npm install#{expand_options(@new_resource.options)} #{name}"
+    command = "npm install --global#{expand_options(@new_resource.options)} #{name}"
     command << "@#{version}" if version && !version.empty?
     run_npm_command command
   end
@@ -46,13 +54,11 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def remove_package(name, version)
-    command = "npm deactivate #{name}"
-    command << "@#{version}" if version && !version.empty?
-    run_npm_command command
+    purge_package(name, version)
   end
 
   def purge_package(name, version)
-    command = "npm uninstall #{name}"
+    command = "npm uninstall --global #{name}"
     command << "@#{version}" if version && !version.empty?
     run_npm_command command
   end
@@ -61,11 +67,13 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
     run_command(:command => command, :user => @user)
   end
 
-  def version_from_output(output)
-    if output =~ /Nothing found/
-      nil
+  def global_installed_packages
+    status, stdout, stderr = output_of_command("npm list --global --long --parseable", {:user => @user})
+
+    if status == 0
+      stdout.split("\n").map { |line| line.split(":")[1] }.compact.uniq
     else
-      output.split("\n").last.split(/\s|@/)[1]
+      []
     end
   end
 end

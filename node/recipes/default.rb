@@ -1,18 +1,6 @@
 include_recipe "homebrew"
 
-directory node[:npm][:root] do
-  owner node[:npm][:user]
-  group "staff"
-end
-
 package "node"
-
-template node[:npm][:globalconfig] do
-  variables node[:npm]
-  mode 0644
-  owner node[:npm][:user]
-  group "staff"
-end
 
 if File.exist?("#{node[:homebrew][:prefix]}/bin/npm")
   npm_package "npm" do
@@ -37,7 +25,7 @@ else
     not_if { File.exist?(npm_dir) }
   end
 
-  execute "make uninstall dev" do
+  execute "make dev" do
     cwd "#{npm_dir}/package"
     user node[:npm][:user]
   end
