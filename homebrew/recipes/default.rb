@@ -44,6 +44,9 @@ execute "brew cleanup" do
   action :nothing
 end
 
+package "https://github.com/josh/brew-gem/raw/master/Formula/brew-gem.rb"
+package "https://github.com/josh/brew-pip/raw/master/Formula/brew-pip.rb"
+
 node[:homebrew][:formulas].each do |formula|
   package formula
 end
