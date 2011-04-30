@@ -25,7 +25,7 @@ else
     not_if { File.exist?(npm_dir) }
   end
 
-  execute "make dev" do
+  execute "make install" do
     cwd "#{npm_dir}/package"
     user node[:npm][:user]
   end

@@ -68,12 +68,25 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def global_installed_packages
+    root = npm_root
     status, stdout, stderr = output_of_command("npm list --global --long --parseable", {:user => @user})
 
     if status == 0
-      stdout.split("\n").map { |line| line.split(":")[1] }.compact.uniq
+      pkgs = stdout.split("\n").map { |line| line.split(":") }
+      pkgs = pkgs.select { |pkg| ::File.dirname(pkg[0]) == root }
+      pkgs.map { |pkg| pkg[1] }.compact.uniq
     else
       []
+    end
+  end
+
+  def npm_root
+    status, stdout, stderr = output_of_command("npm root --global", {:user => @user})
+
+    if status == 0
+      stdout
+    else
+      raise "no npm root"
     end
   end
 end
