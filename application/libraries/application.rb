@@ -21,6 +21,10 @@ class Chef::Resource::Application < Chef::Resource
     set_or_return(:user, arg, :kind_of => [String])
   end
 
+  def appcast(arg = nil)
+    set_or_return(:appcast, arg, :kind_of => [String])
+  end
+
   def source(arg = nil)
     set_or_return(:source, arg, :kind_of => [String])
   end
@@ -28,6 +32,8 @@ end
 
 
 require 'chef/provider'
+require 'open-uri'
+require 'rexml/document'
 
 class Chef::Provider::Application < Chef::Provider
   include Chef::Mixin::Command
@@ -41,8 +47,24 @@ class Chef::Provider::Application < Chef::Provider
     Chef::Config[:file_cache_path]
   end
 
+  def latest_source_url
+    @latest_source_url ||= fetch_latest_source_url
+  end
+
+  def fetch_latest_source_url
+    if feed_url = @new_resource.appcast
+      doc = REXML::Document.new(open(feed_url).read)
+      doc.elements.each('rss/channel/item/enclosure') do |e|
+        return e.attributes['url']
+      end
+      nil
+    else
+      @new_resource.source
+    end
+  end
+
   def cached_path
-    ::File.join(file_cache_path, ::File.basename(@new_resource.source))
+    ::File.join(file_cache_path, ::File.basename(latest_source_url))
   end
 
   def extracted_path
@@ -54,7 +76,7 @@ class Chef::Provider::Application < Chef::Provider
   end
 
   def build_remote_file_resource
-    resource_source = @new_resource.source
+    resource_source = latest_source_url
 
     remote_file cached_path do
       source resource_source
