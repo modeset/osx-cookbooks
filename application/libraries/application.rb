@@ -34,6 +34,7 @@ end
 require 'chef/provider'
 require 'open-uri'
 require 'rexml/document'
+require 'uri'
 
 class Chef::Provider::Application < Chef::Provider
   include Chef::Mixin::Command
@@ -48,7 +49,7 @@ class Chef::Provider::Application < Chef::Provider
   end
 
   def latest_source_url
-    @latest_source_url ||= fetch_latest_source_url
+    @latest_source_url ||= URI.escape(fetch_latest_source_url)
   end
 
   def fetch_latest_source_url
@@ -71,21 +72,12 @@ class Chef::Provider::Application < Chef::Provider
     ::File.join(file_cache_path, ::File.basename(@new_resource.name, '.app'))
   end
 
-  def remote_file_resource
-    @remote_file_resource ||= build_remote_file_resource
-  end
-
-  def build_remote_file_resource
-    resource_source = latest_source_url
-
-    remote_file cached_path do
-      source resource_source
-      action :nothing
-    end
-  end
-
   def action_download
-    remote_file_resource.run_action :create_if_missing
+    ::File.open(cached_path, 'w') do |f|
+      open(latest_source_url).each do |d|
+        f << d
+      end
+    end
   end
 
   def archive_resource
