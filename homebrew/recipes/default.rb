@@ -18,10 +18,10 @@ unless File.exist?("#{node[:homebrew][:prefix]}/bin/brew")
     user node[:homebrew][:user]
     creates "#{node[:homebrew][:prefix]}/bin/brew"
   end
-end
-
-file homebrew_tar do
-  action :delete
+  
+  file homebrew_tar do
+    action :delete
+  end
 end
 
 ruby_block "check homebrew" do
