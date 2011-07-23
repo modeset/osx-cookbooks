@@ -12,7 +12,7 @@ execute "mysql_install_db" do
   ].join(" ")
   user node[:homebrew][:user]
   cwd node[:homebrew][:prefix]
-  creates "#{node[:homebrew][:prefix]}/var/mysql"
+  creates "#{node[:homebrew][:prefix]}/var/mysql/test"
 end
 
 if node[:mysql][:launchd]
