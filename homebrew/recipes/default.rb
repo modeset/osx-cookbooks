@@ -27,7 +27,7 @@ end
 ruby_block "check homebrew" do
   block do
     result = `#{node[:homebrew][:prefix]}/bin/brew --version`
-    raise("brew not working: #{result}") unless result.strip.to_f >= 0.7
+    raise("brew not working: #{result}") unless result.strip.to_f >= 0.8
   end
 end
 
