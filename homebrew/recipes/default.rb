@@ -1,3 +1,9 @@
+execute node[:homebrew][:prefix] do
+  command "sudo mkdir #{node[:homebrew][:prefix]}; " +
+    "sudo chown #{node[:homebrew][:user]}:staff #{node[:homebrew][:prefix]}"
+  creates node[:homebrew][:prefix]
+end
+
 directory node[:homebrew][:prefix] do
   action :create
   owner node[:homebrew][:user]
