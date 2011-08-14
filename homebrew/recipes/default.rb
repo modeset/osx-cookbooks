@@ -24,7 +24,7 @@ unless File.exist?("#{node[:homebrew][:prefix]}/bin/brew")
     user node[:homebrew][:user]
     creates "#{node[:homebrew][:prefix]}/bin/brew"
   end
-  
+
   file homebrew_tar do
     action :delete
   end
@@ -48,8 +48,8 @@ execute "brew cleanup" do
   action :nothing
 end
 
-package "https://raw.github.com/josh/brew-gem/master/Formula/brew-gem.rb"
-package "https://raw.github.com/josh/brew-pip/master/Formula/brew-pip.rb"
+package "brew-gem"
+package "brew-pip"
 
 node[:homebrew][:formulas].each do |formula|
   package formula
