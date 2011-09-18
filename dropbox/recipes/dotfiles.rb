@@ -1,11 +1,5 @@
 include_recipe "dropbox"
-
-out = `find #{node[:dropbox][:dotfiles]} -name '*conflicted*' -print`
-out.lines.each do |path|
-  file path.chomp do
-    action :delete
-  end
-end
+include_recipe "dropbox::conflicts"
 
 Dir["#{node[:dropbox][:dotfiles]}/*"].each do |file|
   source, file = file, File.basename(file)
