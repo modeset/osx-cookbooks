@@ -4,7 +4,7 @@ package "openvpn"
 
 unless File.exist?("/Library/Extensions/tun.kext")
   root       = Chef::Config[:file_cache_path]
-  version    = "20090913"
+  version    = "20111101"
   tuntap_dir = "#{root}/tuntap_#{version}"
   tuntap_tar = "#{root}/tuntap_#{version}.tar.gz"
   
@@ -26,6 +26,6 @@ unless File.exist?("/Library/Extensions/tun.kext")
   #
   execute "sudo installer -pkg #{tuntap_dir}/tuntap_#{version}.pkg -target /" do
     user node[:homebrew][:user]
-  creates "/Library/Extensions/tun.kext"
+    creates "/Library/Extensions/tun.kext"
   end
 end
