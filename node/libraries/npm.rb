@@ -64,12 +64,12 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def run_npm_command(command)
-    run_command(:command => command, :user => @user)
+    run_command(:command => command, :user => @user, :cwd => "/Users/#{@user}")
   end
 
   def global_installed_packages
     root = npm_root
-    status, stdout, stderr = output_of_command("npm list --global --long --parseable", {:user => @user})
+    status, stdout, stderr = output_of_command("npm list --global --long --parseable", {:user => @user, :cwd => "/Users/#{@user}"})
 
     if status == 0
       pkgs = stdout.split("\n").map { |line| line.split(":") }
@@ -81,7 +81,7 @@ class Chef::Provider::Package::Npm < ::Chef::Provider::Package
   end
 
   def npm_root
-    status, stdout, stderr = output_of_command("npm root --global", {:user => @user})
+    status, stdout, stderr = output_of_command("npm root --global", {:user => @user, :cwd => "/Users/#{@user}"})
 
     if status == 0
       stdout
