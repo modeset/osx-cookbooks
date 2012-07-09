@@ -53,6 +53,10 @@ class Chef::Provider::Service::Launch < Chef::Provider::Service
     self.class.path_owned_by_root?(path) ? "root" : @user
   end
 
+  def working_dir
+    user == 'root' ? '/tmp' : "/Users/#{@user}"
+  end
+
   def action_reload
     Chef::Log.debug("#{@new_resource}: attempting to reload")
     if reload_service
@@ -67,17 +71,17 @@ class Chef::Provider::Service::Launch < Chef::Provider::Service
   end
 
   def disable_service
-    run_command(:command => "#{init_command} unload -w -F #{path.shellescape}", :user => user)
+    run_command(:command => "#{init_command} unload -w -F #{path.shellescape}", :user => user, :cwd => working_dir)
     service_status.enabled
   end
 
   def start_service
-    run_command(:command => "#{init_command} start #{label}", :user => user)
+    run_command(:command => "#{init_command} start #{label}", :user => user, :cwd => working_dir)
     service_status.running
   end
 
   def stop_service
-    run_command(:command => "#{init_command} stop #{label}", :user => user)
+    run_command(:command => "#{init_command} stop #{label}", :user => user, :cwd => working_dir)
     service_status.running
   end
 
@@ -92,7 +96,7 @@ class Chef::Provider::Service::Launch < Chef::Provider::Service
   end
 
   def service_status
-    status, stdout, stderr = output_of_command("#{status_command} | grep #{label}", :user => user)
+    status, stdout, stderr = output_of_command("#{status_command} | grep #{label}", :user => user, :cwd => working_dir)
 
     if status == 0
       pid = stdout.split(' ')[0]
