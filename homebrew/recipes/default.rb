@@ -43,9 +43,6 @@ execute "brew cleanup" do
   action :nothing
 end
 
-package "brew-gem"
-package "brew-pip"
-
 node[:homebrew][:formulas].each do |formula|
   package formula
 end
