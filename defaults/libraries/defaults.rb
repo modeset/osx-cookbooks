@@ -117,7 +117,7 @@ class Chef::Provider::Defaults < Chef::Provider
 
     @current_resource = Chef::Resource::Defaults.new(domain, key, @run_context)
 
-    status, stdout, stderr = output_of_command("defaults read-type #{domain} #{key}", {:user => @current_resource.user})
+    status, stdout, stderr = output_of_command("defaults read-type #{domain} #{key.inspect}", {:user => @current_resource.user})
     if status == 0 && stdout =~ /Type is (\w+)/
       @current_resource.type($1)
     end
@@ -126,7 +126,7 @@ class Chef::Provider::Defaults < Chef::Provider
       @new_resource.type(@current_resource.type)
     end
 
-    status, stdout, stderr = output_of_command("defaults read #{domain} #{key}", {:user => @current_resource.user})
+    status, stdout, stderr = output_of_command("defaults read #{domain} #{key.inspect}", {:user => @current_resource.user})
     if status == 0
       value = decode(@current_resource.type, stdout)
       @current_resource.value(value)
@@ -168,7 +168,7 @@ class Chef::Provider::Defaults < Chef::Provider
     type   = resource.type
     value  = encode(type, resource.value)
 
-    command = "defaults write #{domain} #{key} -#{type} #{value.inspect}"
+    command = "defaults write #{domain} #{key.inspect} -#{type} #{value.inspect}"
 
     run_command(
       :command => command,
@@ -180,7 +180,7 @@ class Chef::Provider::Defaults < Chef::Provider
   def delete_key(resource)
     domain  = resource.domain
     key     = resource.key
-    command = "defaults delete #{domain} #{key}"
+    command = "defaults delete #{domain} #{key.inspect}"
 
     run_command(
       :command => command,
