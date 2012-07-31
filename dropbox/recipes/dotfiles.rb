@@ -9,6 +9,7 @@ Dir["#{node[:dropbox][:dotfiles]}/*"].each do |file|
     if File.directory?(target)
       directory target do
         action :delete
+        recursive true
       end
     elsif File.file?(target)
       file target do
