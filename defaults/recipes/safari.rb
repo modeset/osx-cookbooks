@@ -6,6 +6,10 @@ defaults "com.apple.safari", "IncludeDevelopMenu" do
   value node[:apple][:safari][:develop_menu]
 end
 
+defaults "com.apple.safari", "IncludeInternalDebugMenu" do
+  value node[:apple][:safari][:debug_menu]
+end
+
 defaults "com.apple.safari", "DownloadsClearingPolicy" do
   value node[:apple][:safari][:downloads_clearing_policy]
 end
