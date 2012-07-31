@@ -1,4 +1,5 @@
 include_recipe "homebrew"
+include_recipe "gcc"
 
 package "rbenv"
 package "ruby-build"
