@@ -20,6 +20,11 @@ unless File.exist?("/Applications/Utilities/XQuartz.app")
   end
 end
 
+execute "sudo SetFile -a V /opt" do
+  only_if { `GetFileInfo -aV /opt`.chomp == "0" }
+  user node[:homebrew][:user]
+end
+
 package "imagemagick" do
   if node[:imagemagick][:ghostscript]
     options "--with-ghostscript"
