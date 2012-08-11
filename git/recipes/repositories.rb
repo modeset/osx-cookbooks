@@ -6,13 +6,13 @@ node[:git][:repositories].each do |dir, url|
   end
 
   execute "git checkout master" do
-    not_if { `git --git-dir #{dir}/.git symbolic-ref HEAD` =~ /master/ }
+    only_if { File.read("#{dir}/.git/HEAD") != "ref: refs/heads/master\n" }
     user node[:git][:user]
     cwd dir
   end
 
   execute "git branch --delete deploy" do
-    only_if { `git --git-dir #{dir}/.git branch --list` =~ /deploy/ }
+    only_if { File.exist?("#{dir}/.git/refs/heads/deploy") }
     user node[:git][:user]
     cwd dir
   end
