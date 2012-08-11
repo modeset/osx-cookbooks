@@ -4,4 +4,16 @@ node[:git][:repositories].each do |dir, url|
     action :sync
     user node[:git][:user]
   end
+
+  execute "git checkout master" do
+    only_if { `git symbolic-ref HEAD` =~ /master/ }
+    user node[:git][:user]
+    cwd dir
+  end
+
+  execute "git branch --delete deploy" do
+    only_if { `git branch --list` =~ /deploy/ }
+    user node[:git][:user]
+    cwd dir
+  end
 end
