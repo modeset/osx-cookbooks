@@ -6,7 +6,7 @@ node[:git][:repositories].each do |dir, url|
   end
 
   execute "git checkout master" do
-    only_if { `git --git-dir #{dir}/.git symbolic-ref HEAD` =~ /master/ }
+    not_if { `git --git-dir #{dir}/.git symbolic-ref HEAD` =~ /master/ }
     user node[:git][:user]
     cwd dir
   end
