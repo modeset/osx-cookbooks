@@ -44,7 +44,8 @@ class Chef::Provider::Package::Homebrew < ::Chef::Provider::Package
   def homebrew_candiate_version
     name = @new_resource.package_name
     status, stdout, stderr = output_of_command("#{brew_bin} info #{name} | head -n1", {:user => @user})
-    status == 0 ? stdout.split(' ')[1] : nil
+    # sample output: "<name>: stable <version>, HEAD"
+    status == 0 ? stdout.split(' ')[2].chomp(',') : nil
   end
 
   def install_package(name, version)
