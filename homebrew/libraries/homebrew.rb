@@ -37,39 +37,43 @@ class Chef::Provider::Package::Homebrew < ::Chef::Provider::Package
   def current_installed_version
     name = @new_resource.package_name
     name = ::File.basename(name, '.rb') if name =~ /https?:\/\//
-    status, stdout, stderr = output_of_command("#{brew_bin} list #{name} --versions", {:user => @user})
+    status, stdout, stderr = output_of_brew_command("list #{name} --versions")
     status == 0 ? stdout.split(' ')[-1] : nil
   end
 
   def homebrew_candiate_version
     name = @new_resource.package_name
-    status, stdout, stderr = output_of_command("#{brew_bin} info #{name} | head -n1", {:user => @user})
+    status, stdout, stderr = output_of_brew_command("info #{name} | head -n1")
     # sample output: "<name>: stable <version>, HEAD"
     status == 0 ? stdout.split(' ')[2].chomp(',') : nil
+  end
+
+  def output_of_brew_command(command)
+    output_of_command "#{brew_bin} #{command}", :user => @user, :cwd => @prefix
   end
 
   def install_package(name, version)
     options = expand_options(@new_resource.options)
     options += " --HEAD" if version == 'HEAD'
-    run_brew_command "#{brew_bin} install #{name}#{options}"
+    run_brew_command "install #{name}#{options}"
   end
 
   def upgrade_package(name, version)
     options = expand_options(@new_resource.options)
     options += " --HEAD" if version == 'HEAD'
-    run_brew_command "#{brew_bin} upgrade #{name}#{options}"
+    run_brew_command "upgrade #{name}#{options}"
   end
 
   def remove_package(name, version)
-    run_brew_command "#{brew_bin} unlink #{name}"
+    run_brew_command "unlink #{name}"
   end
 
   def purge_package(name, version)
-    run_brew_command "#{brew_bin} uninstall #{name}"
+    run_brew_command "uninstall #{name}"
   end
 
   def run_brew_command(command)
-    run_command(:command => command, :user => @user)
+    run_command :command => "#{brew_bin} #{command}", :user => @user, :cwd => @prefix
   end
 end
 
