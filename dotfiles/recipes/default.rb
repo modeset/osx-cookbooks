@@ -22,3 +22,13 @@ Dir["#{node[:dotfiles][:path]}/*"].each do |file|
     only_if { File.exist?(source) }
   end
 end
+
+include_recipe "emacs"
+include_recipe "git"
+include_recipe "homebrew"
+include_recipe "rbenv"
+
+package "ack"
+package "direnv"
+package "rlwrap"
+package "wget"
