@@ -1,5 +1,6 @@
-if !File.exist?("/Applications/Xcode.app")
-  raise "Install Xcode from App Store"
+execute "ensure Xcode is installed" do
+  command "sh -c 'exit 1'"
+  creates "/Applications/Xcode.app"
 end
 
 execute "sudo xcode-select -switch #{node[:xcode][:path]}" do
