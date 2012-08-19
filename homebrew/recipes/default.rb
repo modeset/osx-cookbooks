@@ -1,3 +1,5 @@
+include_recipe "xcode"
+
 execute node[:homebrew][:prefix] do
   command "sudo mkdir #{node[:homebrew][:prefix]}; " +
     "sudo chown #{node[:homebrew][:user]}:staff #{node[:homebrew][:prefix]}"
