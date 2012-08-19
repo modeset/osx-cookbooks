@@ -1,9 +1,6 @@
-include_recipe "dropbox"
-include_recipe "dropbox::conflicts"
-
-Dir["#{node[:dropbox][:dotfiles]}/*"].each do |file|
+Dir["#{node[:dotfiles][:path]}/*"].each do |file|
   source, file = file, File.basename(file)
-  target = "#{ENV['HOME']}/.#{file}"
+  target = "#{node[:dotfiles][:home]}/.#{file}"
 
   if !File.symlink?(target)
     if File.directory?(target)
@@ -20,7 +17,7 @@ Dir["#{node[:dropbox][:dotfiles]}/*"].each do |file|
 
   link target do
     to source
-    owner node[:dropbox][:user]
+    owner node[:dotfiles][:user]
     group "staff"
     only_if { File.exist?(source) }
   end
