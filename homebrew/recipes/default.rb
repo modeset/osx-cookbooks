@@ -32,13 +32,6 @@ unless File.exist?("#{node[:homebrew][:prefix]}/bin/brew")
   end
 end
 
-ruby_block "check homebrew" do
-  block do
-    result = `#{node[:homebrew][:prefix]}/bin/brew --version`
-    raise("brew not working: #{result}") unless result.strip.to_f >= 0.8
-  end
-end
-
 execute "brew update" do
   command "#{node[:homebrew][:prefix]}/bin/brew update"
   user node[:homebrew][:user]
