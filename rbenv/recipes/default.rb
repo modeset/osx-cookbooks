@@ -14,6 +14,6 @@ end
 if version = node[:rbenv][:global]
   execute "rbenv global #{version}" do
     user node[:rbenv][:user]
-    not_if { File.exist?("#{node[:rbenv][:root]}/global") }
+    not_if { File.exist?("#{node[:rbenv][:root]}/version") }
   end
 end
