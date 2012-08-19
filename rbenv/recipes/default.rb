@@ -5,10 +5,7 @@ package "rbenv"
 package "ruby-build"
 
 node[:rbenv][:versions].each do |version|
-  execute "rbenv install #{version}" do
-    user node[:rbenv][:user]
-    not_if { File.exist?("#{node[:rbenv][:root]}/versions/#{version}") }
-  end
+  rbenv_version version
 end
 
 if version = node[:rbenv][:global]
