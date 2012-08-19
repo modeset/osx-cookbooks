@@ -1,5 +1,5 @@
 application "TextMate" do
-  source "http://download.macromates.com/TextMate_1.5.10.zip"
+  source "http://download.macromates.com/TextMate_1.5.11_r1635.zip"
 end
 
 link "/usr/local/bin/mate" do
