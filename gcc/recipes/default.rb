@@ -26,7 +26,7 @@ else
     action :create_if_missing
   end
 
-  archive clt do
+  archive clt_dmg do
     path root
   end
 
