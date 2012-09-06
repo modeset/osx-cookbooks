@@ -2,7 +2,7 @@ include_recipe "homebrew"
 
 package "postgresql"
 
-execute "initdb #{node[:homebrew][:prefix]}/var/postgres" do
+execute "initdb #{node[:homebrew][:prefix]}/var/postgres -E utf8" do
   user node[:homebrew][:user]
   creates "#{node[:homebrew][:prefix]}/var/postgres"
 end
