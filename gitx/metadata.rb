@@ -5,3 +5,4 @@ description      "Installs GitX"
 version          "0.1.0"
 
 supports "mac_os_x"
+depends "application"
